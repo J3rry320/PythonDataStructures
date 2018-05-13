@@ -7,6 +7,26 @@ class Node(object):
 class AVL(object):
     def __init__(self,data):
         self.root=None
+    def insert(self,data):
+        self.root=self.insertNode(data,self.root)
+    def insertNode(self,data,node):
+        if not node:
+            return Node(data)
+        if data<node.data:
+            node.leftNode=self.insertNode(data,node.leftNode)
+        elif data>node.data:
+            node.rightNode=self.insertNode(data,node.rightNode)
+        height=max(self.calculateHeight(node.leftNode),self.calculateHeight(node.rightNode))+1
+        return self.checkViolation(data,node)
+    def checkViolation(self,data,node):
+        balance=self.checkBalance(node)
+        if balance>1 and data<node.leftNode.data:
+            print("Left Left heavy situatuon")
+            return self.rotateRight(node)
+        elif balance<1 and data>node.rightNode.data:
+            print("right right heavay situation")
+            return self.rotateLeft(node)
+
     def calculateHeight(self,node):
         if not node:
             return -1
@@ -21,8 +41,8 @@ class AVL(object):
         t=tempNode.rightNode
         tempNode.rightNode=node
         node.leftNode=t
-        node.height=max(self.calculateHeight(node.leftNode)-self.calculateHeight(node.rightNode))+1
-        tempNode.height=max(self.calculateHeight(node.leftNode)-self.calculateHeight(node.rightNode))+1
+        node.height=max(self.calculateHeight(node.leftNode),self.calculateHeight(node.rightNode))+1
+        tempNode.height=max(self.calculateHeight(node.leftNode),self.calculateHeight(node.rightNode))+1
         return tempNode
     def rotateLeft(self,node):
         print("rotating left")
@@ -30,6 +50,6 @@ class AVL(object):
         t=tempNode.leftNode
         tempNode.leftNode=node
         node.rightNode=t
-        node.height=max(self.calculateHeight(node.leftNode)-self.calculateHeight(node.rightNode))+1
-        tempNode.height=max(self.calculateHeight(node.leftNode)-self.calculateHeight(node.rightNode))+1
+        node.height=max(self.calculateHeight(node.leftNode),self.calculateHeight(node.rightNode))+1
+        tempNode.height=max(self.calculateHeight(node.leftNode),self.calculateHeight(node.rightNode))+1
         return tempNode
